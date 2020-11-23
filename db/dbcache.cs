@@ -43,7 +43,7 @@ namespace dswebapi.db.cache
             if (CacheDictionary.ContainsKey(key))
                 return (T)CacheDictionary[key];
             else
-                return default(T);
+                return default;
         }
         /// <summary>
         /// 判断缓存是否存在
