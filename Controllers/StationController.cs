@@ -1,35 +1,18 @@
-﻿using dswebapi.db;
-using dswebapi.Models;
-using log4net;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
+using dswebapi.db;
+using System.Text;
+using Newtonsoft.Json;
+using dswebapi.Models;
 
 namespace dswebapi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    public class UserController : ControllerBase
+    public class StationController : ControllerBase
     {
         private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(UserController));
-
-        public UserController()
-        {
-            this.userDao = new UserDao();
-        }
-
-        private UserDao userDao;
-        public bool login(string name, string pwd)
-        {
-
-            return userDao.login(name,pwd);
-        }
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
@@ -37,16 +20,18 @@ namespace dswebapi.Controllers
         {
             try
             {
-                List<User> users = db.dbdao.GetList<User>();
+                List<Station> stations = db.dbdao.GetList<Station>();
                 StringBuilder sb = new StringBuilder();
-                foreach (Models.User a in users)
+                foreach (Models.Station a in stations)
                 {
                     sb.Append(JsonConvert.SerializeObject(a));
-                    sb.Append("\r\n");
+                    //sb.Append("\r\n");
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
                 log.Info(sb);
 
+                string cc = (Guid.NewGuid()).ToString();
+                sb.Append(cc);
                 return sb.ToString();
             }
             catch (Exception ee)
@@ -54,6 +39,22 @@ namespace dswebapi.Controllers
                 log.Error(ee.Message);
                 return ee.Message;
             }
-        } 
+        }
+
+        [HttpPost]
+        public bool Save([FromBody] Station station)
+        {
+            Station temp = db.dbdao.GetById<Station>(station.id.ToString());
+            if (temp != null)
+            {
+                return dbdao.DbUpdate(station);
+            }
+            else
+            {
+                return dbdao.DbInsert(station);
+            }
+            //return device.id;
+        }
+
     }
 }

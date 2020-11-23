@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace db
+namespace dswebapi.Models
 {
     [SugarTable("public.area")]//指定数据库中的表名，要对应数据库的表名，否则会出错
     public class Area:DataBase

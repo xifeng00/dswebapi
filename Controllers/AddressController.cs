@@ -10,11 +10,9 @@ using dswebapi.Models;
 
 namespace dswebapi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    public class DeviceController : ControllerBase
+    public class AddressController : ControllerBase
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(DeviceController));
+        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(AddressController));
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
@@ -22,16 +20,16 @@ namespace dswebapi.Controllers
         {
             try
             {
-                List<Device> devices = db.dbdao.GetList<Device>();
+                List<Address> addresses = db.dbdao.GetList<Address>();
                 StringBuilder sb = new StringBuilder();
-                foreach (Models.Device a in devices)
+                foreach (Models.Address a in addresses)
                 {
                     sb.Append(JsonConvert.SerializeObject(a));
                     //sb.Append("\r\n");
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
                 log.Info(sb);
-                
+
                 string cc = (Guid.NewGuid()).ToString();
                 sb.Append(cc);
                 return sb.ToString();
@@ -43,20 +41,20 @@ namespace dswebapi.Controllers
             }
         }
 
+        //新增修改
         [HttpPost]
-        public bool Save([FromBody]Device device)
+        public bool Save([FromBody] Address address)
         {
-            Device temp= db.dbdao.GetById<Device>(device.id.ToString());
+            Address temp = db.dbdao.GetById<Address>(address.id.ToString());
             if (temp != null)
             {
-                return dbdao.DbUpdate(device);
+                return dbdao.DbUpdate(address);
             }
             else
             {
-                return dbdao.DbInsert(device);  
+                return dbdao.DbInsert(address);
             }
             //return device.id;
         }
-
-    } 
+    }
 }

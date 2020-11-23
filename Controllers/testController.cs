@@ -1,5 +1,6 @@
 ﻿
-using db;
+using dswebapi.db;
+using dswebapi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -26,7 +27,7 @@ namespace dswebapi.Controllers
                 List<Area> areas = db.dbdao.GetList<Area>();
                 //List<Area> areas = dbdao.GetById("530823");
                 StringBuilder sb = new StringBuilder();
-                foreach (db.Area a in areas)
+                foreach (Models.Area a in areas)
                 {
                     sb.Append(JsonConvert.SerializeObject(a));
                     sb.Append("\r\n");
@@ -47,7 +48,7 @@ namespace dswebapi.Controllers
         
         public string insert()
         {
-            db.Test t = new Test();
+            Models.Test t = new Test();
             t.id = Guid.NewGuid().ToString();
             t.name = "test";
             db.dbdao.DbInsert(t);
