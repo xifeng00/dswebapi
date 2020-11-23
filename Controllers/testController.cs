@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApplication6.Controllers
+namespace dswebapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]

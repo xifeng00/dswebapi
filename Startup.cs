@@ -1,8 +1,10 @@
 using log4net;
 using log4net.Config;
 using log4net.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication6
+namespace dswebapi
 {
     public class Startup
     {
@@ -30,6 +32,13 @@ namespace WebApplication6
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,o=>{
+                o.Cookie.Name = "_AdminTicketCookie";
+                //o.LoginPath = new PathString("/Account/Login");
+                //o.LogoutPath = new PathString("/Account/Login");
+                //o.AccessDeniedPath = new PathString("/Error/Forbidden");
+            });
+            //services.AddTransient<TiKu.Application.Interfaces.IAdminService, TiKu.Application.AdminService>();
             services.AddControllers();
         }
 
@@ -39,6 +48,10 @@ namespace WebApplication6
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
             }
 
             app.UseRouting();
