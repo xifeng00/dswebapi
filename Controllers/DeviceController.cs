@@ -54,7 +54,6 @@ namespace dswebapi.Controllers
             {
                 return dbdao.DbUpdate(device);
             }
-            //return device.id;拉取
             //return device.id;
         }
 
