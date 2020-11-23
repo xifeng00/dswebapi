@@ -39,7 +39,10 @@ namespace db.cache
         /// </summary>
         public static T CacheGet<T>(string key)
         {
-            return (T)CacheDictionary[key];
+            if (CacheDictionary.ContainsKey(key))
+                return (T)CacheDictionary[key];
+            else
+                return default(T);
         }
         /// <summary>
         /// 判断缓存是否存在
