@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace db
 {
+    /// <summary>
+    /// 地址类
+    /// </summary>
     [SugarTable("public.address")]//指定数据库中的表名，要对应数据库的表名，否则会出错
     public class Address:DataBase
     {
