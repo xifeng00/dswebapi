@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebApplication6.Controllers
+namespace dswebapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
@@ -33,6 +33,8 @@ namespace WebApplication6.Controllers
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
                 log.Info(sb);
+                log.Info("改动一下");
+                log.Info("改动一下11111111111");
 
                 return sb.ToString();
             }
