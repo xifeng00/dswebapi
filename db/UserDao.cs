@@ -9,6 +9,7 @@ namespace dswebapi.db
 {
     public class UserDao
     {
+        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(UserDao));
         /// <summary>
         /// 登录
         /// </summary>
@@ -21,7 +22,10 @@ namespace dswebapi.db
             string sql = "select * from user where name='"+name+"' and pwd='"+pwd+"'";
             List<User> userls= dbdao.DbSql<User>(sql);
             if (userls.Count > 0)
+            {
+                log.Info("用户登录：" + name + " 时间：" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:sss"));
                 return true;
+            }
             else
                 return false;
         }
