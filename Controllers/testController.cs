@@ -95,6 +95,10 @@ namespace dswebapi.Controllers
             }
 
         }
+        public string nodatabase()
+        {
+            return "ok no needs database base";
+        }
       
 
     }
