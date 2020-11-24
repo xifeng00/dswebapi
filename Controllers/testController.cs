@@ -33,9 +33,9 @@ namespace dswebapi.Controllers
                     sb.Append("\r\n");
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
-                log.Info(sb);
-                log.Info("改动一下");
-                log.Info("改动一下11111111111");
+               // log.Info(sb);
+               // log.Info("改动一下");
+                //log.Info("改动一下11111111111");
 
                 return sb.ToString();
             }
