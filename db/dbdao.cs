@@ -24,7 +24,8 @@ namespace dswebapi.db
             if(t1==null)
             {
                 t1= dbConnect.GetSqlSugarClient(0).Queryable<T>().InSingle(id1);
-                db.cache.DbCache.CacheAddOne(t1);
+                if(t1!=null)
+                    db.cache.DbCache.CacheAddOne(t1);
             }
             return t1;   
           
