@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace db
+namespace dswebapi.db
 {
     /// <summary>
     /// 数据操作类

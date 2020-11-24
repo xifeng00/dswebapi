@@ -10,11 +10,9 @@ using dswebapi.Models;
 
 namespace dswebapi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    public class DeviceController : ControllerBase
+    public class RoleController : ControllerBase
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(DeviceController));
+        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(RoleController));
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
@@ -22,16 +20,16 @@ namespace dswebapi.Controllers
         {
             try
             {
-                List<Device> devices = db.dbdao.GetList<Device>();
+                List<Role> roles = db.dbdao.GetList<Role>();
                 StringBuilder sb = new StringBuilder();
-                foreach (Models.Device a in devices)
+                foreach (Models.Role a in roles)
                 {
                     sb.Append(JsonConvert.SerializeObject(a));
                     //sb.Append("\r\n");
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
                 log.Info(sb);
-                
+
                 string cc = (Guid.NewGuid()).ToString();
                 sb.Append(cc);
                 return sb.ToString();
@@ -44,19 +42,20 @@ namespace dswebapi.Controllers
         }
 
         [HttpPost]
-        public bool Save([FromBody]Device device)
+        public bool Save([FromBody] Role role)
         {
-            Device temp= db.dbdao.GetById<Device>(device.id.ToString());
+            Role temp = db.dbdao.GetById<Role>(role.id.ToString());
             if (temp != null)
             {
-                return dbdao.DbUpdate(device);
+                return dbdao.DbUpdate(role);
             }
             else
             {
-                return dbdao.DbInsert(device);  
+                return dbdao.DbInsert(role);
             }
             //return device.id;
         }
 
-    } 
+    }
 }
+

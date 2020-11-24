@@ -3,18 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using dswebapi.db;
 using System.Text;
 using Newtonsoft.Json;
+using dswebapi.db;
 using dswebapi.Models;
 
 namespace dswebapi.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]/[action]")]
-    public class DeviceController : ControllerBase
+    public class InterfaceController : ControllerBase
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(DeviceController));
+        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(InterfaceController));
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
@@ -22,16 +20,16 @@ namespace dswebapi.Controllers
         {
             try
             {
-                List<Device> devices = db.dbdao.GetList<Device>();
+                List<Interface> interfaces = db.dbdao.GetList<Interface>();
                 StringBuilder sb = new StringBuilder();
-                foreach (Models.Device a in devices)
+                foreach (Models.Interface a in interfaces)
                 {
                     sb.Append(JsonConvert.SerializeObject(a));
                     //sb.Append("\r\n");
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
                 log.Info(sb);
-                
+
                 string cc = (Guid.NewGuid()).ToString();
                 sb.Append(cc);
                 return sb.ToString();
@@ -44,19 +42,20 @@ namespace dswebapi.Controllers
         }
 
         [HttpPost]
-        public bool Save([FromBody]Device device)
+        public bool Save([FromBody] Interface iinterface)
         {
-            Device temp= db.dbdao.GetById<Device>(device.id.ToString());
+            Interface temp = db.dbdao.GetById<Interface>(iinterface.id.ToString());
             if (temp != null)
             {
-                return dbdao.DbUpdate(device);
+                return dbdao.DbUpdate(iinterface);
             }
             else
             {
-                return dbdao.DbInsert(device);  
+                return dbdao.DbInsert(iinterface);
             }
             //return device.id;
         }
 
-    } 
+    }
 }
+

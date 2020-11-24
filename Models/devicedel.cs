@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace db
+namespace dswebapi.Models
 {
     [SugarTable("public.Device_del")]//指定数据库中的表名，要对应数据库的表名，否则会出错
     public class DeviceDel:DataBase
