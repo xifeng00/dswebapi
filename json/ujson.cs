@@ -12,9 +12,17 @@ namespace json
         {
             return JsonConvert.SerializeObject(_j);
         }
-        public static object toObject(string jsonstr)
+        public static T toClass<T>(string jsonstr)
         {
-            return JsonConvert.DeserializeObject( jsonstr);
+            try
+            {
+                return (T)JsonConvert.DeserializeObject(jsonstr);
+            }
+            catch(Exception ee)
+            {
+                config.config.outlog("ujson.toClass",ee.Message);
+                return default;
+            }
         }
 
     }
