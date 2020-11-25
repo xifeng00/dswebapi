@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using NETCore.Encrypt;
 
 namespace dswebapi.Controllers
 {
@@ -25,10 +25,10 @@ namespace dswebapi.Controllers
         }
 
         private UserDao userDao;
-        public bool login(string name, string pwd)
+        [HttpGet]
+        public bool login(string account, string pwd)
         {
-
-            return userDao.login(name,pwd);
+            return userDao.login(account, pwd);
         }
 
         [HttpGet]
@@ -54,6 +54,20 @@ namespace dswebapi.Controllers
                 log.Error(ee.Message);
                 return ee.Message;
             }
-        } 
+        }
+        [HttpPost]
+        public bool save([FromBody] User user)
+        {
+            User temp = db.dbdao.GetById<User>(user.id.ToString());
+            if (temp != null)
+            {
+                return dbdao.DbUpdate(user);
+            }
+            else
+            {
+                user.pwd= EncryptProvider.Md5(user.pwd);//密码加密过程
+                return dbdao.DbInsert(user);
+            }
+        }
     }
 }

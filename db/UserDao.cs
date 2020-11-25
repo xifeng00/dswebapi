@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NETCore.Encrypt;
 using dswebapi.Models;
+using dswebapi.Util;
 
 namespace dswebapi.db
 {
@@ -16,14 +17,15 @@ namespace dswebapi.db
         /// <param name="name"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public bool login(string name, string pwd)
+        public bool login(string account, string pwd)
         {
             string jmpwd = EncryptProvider.Md5(pwd);
-            string sql = "select * from user where name='"+name+"' and pwd='"+pwd+"'";
+            string sql = "select * from \"user\" where account='" + account + "' and pwd='"+ jmpwd + "'";
             List<User> userls= dbdao.DbSql<User>(sql);
             if (userls.Count > 0)
             {
-                log.Info("用户登录：" + name + " 时间：" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:sss"));
+                log.Info("用户登录：" + account + " 时间：" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:sss"));
+                CacheHelperNetCore.CacheInsertFromMinutes("cache", userls[0].id.ToString(), 10);
                 return true;
             }
             else
