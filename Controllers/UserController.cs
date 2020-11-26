@@ -45,6 +45,7 @@ namespace dswebapi.Controllers
                     IsPersistent = false,
                     AllowRefresh = false
                 });
+                return json
                 //return Redirect("/Home/Index");
             }
             return Json(new { result = false, msg = "用户名密码错误!" });
