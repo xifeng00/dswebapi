@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace dswebapi
 {
     public class Startup
@@ -26,7 +27,7 @@ namespace dswebapi
             repository = LogManager.CreateRepository("NETCoreRepository");
             XmlConfigurator.Configure(repository, new FileInfo("log4net.config"));
             config.config.configLog= log4net.LogManager.GetLogger(repository.Name,"config");
-            json.ujson.toClass<Models.Area>("ss:ss");
+            //json.ujson.toClass<Models.Area>("ss:ss");
         }
         public static ILoggerRepository repository { get; set; }
         public IConfiguration Configuration { get; }
