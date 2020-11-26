@@ -31,9 +31,14 @@ namespace dswebapi.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> login(string account, string pwd)
+        public async Task<User> login(string account, string pwd)
         {
-            if (userDao.login(account, pwd))
+            if (account == "" || pwd == ""||account==null || pwd==null)
+            {
+                return null;
+            }
+            User user = userDao.login(account, pwd);
+            if (user!=null)
             {
                 var claims = new List<Claim>(){
                         new Claim(ClaimTypes.Name,account)
@@ -45,16 +50,11 @@ namespace dswebapi.Controllers
                     IsPersistent = false,
                     AllowRefresh = false
                 });
-                return Content("OK");
+                //return Content("OK");
+                return user;
             }
-            return Json(new { result = false, msg = "用户名密码错误!" });
+            return null;
         }                               
-
-
-        private IActionResult Json(object p)
-        {
-            throw new NotImplementedException();
-        }
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]

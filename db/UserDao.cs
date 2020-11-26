@@ -17,7 +17,7 @@ namespace dswebapi.db
         /// <param name="name"></param>
         /// <param name="pwd"></param>
         /// <returns></returns>
-        public bool login(string account, string pwd)
+        public User login(string account, string pwd)
         {
             string jmpwd = EncryptProvider.Md5(pwd);
             string sql = "select * from \"user\" where account='" + account + "' and pwd='"+ jmpwd + "'";
@@ -26,11 +26,11 @@ namespace dswebapi.db
             {
                 log.Info("用户登录：" + account + " 时间：" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:sss"));
                 CacheHelperNetCore.CacheInsertFromMinutes("cache", userls[0].id.ToString(), 10);
-
-                return true;
+                User user = (User)userls[0];
+                return user;
             }
             else
-                return false;
+                return null;
         }
 
         /// <summary>
