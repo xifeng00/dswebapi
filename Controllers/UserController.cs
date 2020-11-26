@@ -45,10 +45,10 @@ namespace dswebapi.Controllers
                     IsPersistent = false,
                     AllowRefresh = false
                 });
-                return Redirect("/Home/Index");
+                return Content("OK");
             }
             return Json(new { result = false, msg = "用户名密码错误!" });
-        }
+        }                               
 
 
         private IActionResult Json(object p)
