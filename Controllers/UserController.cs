@@ -1,18 +1,21 @@
 ﻿using dswebapi.db;
 using dswebapi.Models;
-using log4net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NETCore.Encrypt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dswebapi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
@@ -25,10 +28,32 @@ namespace dswebapi.Controllers
         }
 
         private UserDao userDao;
+
+        [AllowAnonymous]
         [HttpGet]
-        public bool login(string account, string pwd)
+        public async Task<IActionResult> login(string account, string pwd)
         {
-            return userDao.login(account, pwd);
+            if (userDao.login(account, pwd))
+            {
+                var claims = new List<Claim>(){
+                        new Claim(ClaimTypes.Name,account)
+                };
+                var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Customer"));
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties
+                {
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(2),//有效时间20分钟
+                    IsPersistent = false,
+                    AllowRefresh = false
+                });
+                return Redirect("/Home/Index");
+            }
+            return Json(new { result = false, msg = "用户名密码错误!" });
+        }
+
+
+        private IActionResult Json(object p)
+        {
+            throw new NotImplementedException();
         }
 
         [HttpGet]
@@ -68,6 +93,24 @@ namespace dswebapi.Controllers
                 user.pwd= EncryptProvider.Md5(user.pwd);//密码加密过程
                 return dbdao.DbInsert(user);
             }
+        }
+        /// <summary>
+        /// 验证用户账户 不允许重复
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public bool accountVerification(string account)
+        {
+            return userDao.accountVerification(account);
+        }
+
+        /// <summary>
+        /// 获取用户列表
+        /// </summary>
+        /// <returns></returns>
+        public List<User> GetUsers()
+        {
+            return dbdao.GetList<User>();
         }
     }
 }

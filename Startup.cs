@@ -36,24 +36,15 @@ namespace dswebapi
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,o=>{
                 o.Cookie.Name = "_AdminTicketCookie";
-                //o.LoginPath = new PathString("/Account/Login");
-                //o.LogoutPath = new PathString("/Account/Login");
-                //o.AccessDeniedPath = new PathString("/Error/Forbidden");
+                o.LoginPath = new PathString("/api/user/login");
             });
-            //services.AddTransient<TiKu.Application.Interfaces.IAdminService, TiKu.Application.AdminService>();
             services.AddControllers();
-
-            //services.AddSession(options =>
-            //{
-            //    options.Cookie.Name = "April.Session";
-            //    options.IdleTimeout = TimeSpan.FromSeconds(2000);//设置session的过期时间
-            //    options.Cookie.HttpOnly = true;//设置在浏览器不能通过js获得该cookie的值,实际场景根据自身需要
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseAuthentication();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,9 +53,7 @@ namespace dswebapi
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
             app.UseRouting();
-            //app.UseSession();
 
             app.UseAuthorization();
 

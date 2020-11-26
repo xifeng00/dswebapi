@@ -26,10 +26,28 @@ namespace dswebapi.db
             {
                 log.Info("用户登录：" + account + " 时间：" + DateTime.Now.ToString("yyyy-MM-dd hh:mm:sss"));
                 CacheHelperNetCore.CacheInsertFromMinutes("cache", userls[0].id.ToString(), 10);
+
                 return true;
             }
             else
                 return false;
+        }
+
+        /// <summary>
+        /// 验证用户账户 不允许重复
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public bool accountVerification(string account)
+        {
+            string sql = "select * from \"user\" where account='" + account + "'";
+            List<User> userls = dbdao.DbSql<User>(sql);
+            if (userls.Count > 0)
+            {
+                return false;
+            }
+            else
+                return true;
         }
     }
 }
