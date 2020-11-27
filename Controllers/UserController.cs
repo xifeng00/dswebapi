@@ -53,7 +53,7 @@ namespace dswebapi.Controllers
                 JsonResult result = new JsonResult(user);
                 return result;
             }
-            return Content("用户名密码错误"); 
+            return Content("no login"); 
         }                               
 
         [HttpGet]
