@@ -46,7 +46,7 @@ namespace dswebapi.Controllers
                 var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Customer"));
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties
                 {
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30),//有效时间20分钟
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(2),//有效时间20分钟
                     IsPersistent = false,
                     AllowRefresh = false
                 });
