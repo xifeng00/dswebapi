@@ -7,9 +7,13 @@ using System.Text;
 using Newtonsoft.Json;
 using dswebapi.db;
 using dswebapi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dswebapi.Controllers
 {
+    [Authorize]
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class DeviceDebugController : ControllerBase
     {
         private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(DeviceDebugController));

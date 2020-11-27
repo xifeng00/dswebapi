@@ -7,9 +7,11 @@ using dswebapi.db;
 using System.Text;
 using Newtonsoft.Json;
 using dswebapi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dswebapi.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class DeviceController : ControllerBase
