@@ -51,6 +51,7 @@ namespace dswebapi.Controllers
                     AllowRefresh = false
                 });
                 //return Content("OK");
+                log.Info("00000");
                 return user;
             }
             return null;
