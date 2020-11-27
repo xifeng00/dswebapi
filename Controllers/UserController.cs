@@ -31,11 +31,11 @@ namespace dswebapi.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<User> login(string account, string pwd)
+        public async Task<IActionResult> login(string account, string pwd)
         {
             if (account == "" || pwd == ""||account==null || pwd==null)
             {
-                return null;
+                return Content("没有登录") ;
             }
             User user = userDao.login(account, pwd);
             if (user!=null)
@@ -50,11 +50,10 @@ namespace dswebapi.Controllers
                     IsPersistent = false,
                     AllowRefresh = false
                 });
-                return user;
-                //return Redirect("/Home/Index");
-
+                JsonResult result = new JsonResult(user);
+                return result;
             }
-            return null;
+            return Content("用户名密码错误"); 
         }                               
 
         [HttpGet]
