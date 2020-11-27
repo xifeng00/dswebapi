@@ -19,7 +19,7 @@
     },
     "dswebapi": {
       "commandName": "Project",
-      "workingDirectory": "D:\\gitcode\\dswebapi\\bin\\Debug",
+      //"workingDirectory": "D:\\gitcode\\dswebapi\\bin\\Debug",
       "launchBrowser": true,
       "launchUrl": "api/test/get",
       "environmentVariables": {
