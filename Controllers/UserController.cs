@@ -50,16 +50,12 @@ namespace dswebapi.Controllers
                     IsPersistent = false,
                     AllowRefresh = false
                 });
-                return Redirect("/Home/Index");
+                return user;
+                //return Redirect("/Home/Index");
+
             }
-            return Json(new { result = false, msg = "用户名密码错误!" });
-        }
-
-
-        private IActionResult Json(object p)
-        {
-            throw new NotImplementedException();
-        }
+            return null;
+        }                               
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]

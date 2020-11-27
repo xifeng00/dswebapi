@@ -19,7 +19,6 @@ namespace dswebapi.Controllers
     public class test : ControllerBase
     {
         private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(test));
-
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
         public string Get()

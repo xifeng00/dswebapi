@@ -20,5 +20,9 @@
     <PackageReference Include="sqlSugarCore" Version="5.0.1.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="新文件夹\" />
+  </ItemGroup>
+
 
 </Project>
