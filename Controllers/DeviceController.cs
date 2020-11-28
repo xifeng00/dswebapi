@@ -20,23 +20,27 @@ namespace dswebapi.Controllers
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
-        public string Get()
+        public string Get(int online,string sn1)
         {
             try
             {
-                List<Device> devices = db.dbdao.GetList<Device>();
-                StringBuilder sb = new StringBuilder();
-                foreach (Models.Device a in devices)
+                string sql = "";
+                if(sn1!=""&& sn1!=null)
                 {
-                    sb.Append(JsonConvert.SerializeObject(a));
-                    //sb.Append("\r\n");
+                    sql = "select * from device where device_sn like '%" + sn1 + "%'";
                 }
-                //log.Info($"testController-GetArea:{sb.ToString()}");
-                log.Info(sb);
-                
-                string cc = (Guid.NewGuid()).ToString();
-                sb.Append(cc);
-                return sb.ToString();
+                else
+                {  if (online == -1)
+                    {
+                        sql = "select * from device";
+                    }
+                    else
+                    {
+                        sql = "select * from device where device_online='"+ fan.fan.toBool(online)+"'";
+                    }
+                }
+                List<Device> devices = db.dbdao.DbSql<Device>(sql);
+                return json.ujson.toStr<Device>(devices);
             }
             catch (Exception ee)
             {
@@ -44,7 +48,24 @@ namespace dswebapi.Controllers
                 return ee.Message;
             }
         }
+        /// <summary>
+        /// 返回所有的地锁列表
+        /// </summary>
+        /// <returns></returns>
+        public string GetALL()
+        {
+            try
+            {
 
+                List<Device> devices = db.dbdao.GetList<Device>() ;
+                return json.ujson.toStr<Device>(devices);
+            }
+            catch (Exception ee)
+            {
+                log.Error(ee.Message);
+                return ee.Message;
+            }
+        }
         [HttpPost]
         public bool Save([FromBody]Device device)
         {
