@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace dswebapi.Controllers
 {
@@ -20,11 +21,15 @@ namespace dswebapi.Controllers
     [Route("api/[controller]/[action]")]
     public class UserController : ControllerBase
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(UserController));
+        private readonly ILogger<UserController> _logger;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public UserController()
+        public UserController(ILogger<UserController> logger,
+            ILoggerFactory loggerFactory)
         {
             this.userDao = new UserDao();
+            _logger = logger;
+            this._loggerFactory = loggerFactory;
         }
 
         private UserDao userDao;
@@ -46,11 +51,12 @@ namespace dswebapi.Controllers
                 var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Customer"));
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties
                 {
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(2),//有效时间20分钟
+                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30),//有效时间20分钟
                     IsPersistent = false,
                     AllowRefresh = false
                 });
                 JsonResult result = new JsonResult(user);
+                _logger.LogInformation(user.account+"登录");
                 return result;
             }
             return Content("no login"); 
@@ -71,13 +77,13 @@ namespace dswebapi.Controllers
                     sb.Append("\r\n");
                 }
                 //log.Info($"testController-GetArea:{sb.ToString()}");
-                log.Info(sb);
+                _logger.LogInformation(sb.ToString());
 
                 return sb.ToString();
             }
             catch (Exception ee)
             {
-                log.Error(ee.Message);
+                _logger.LogError(ee.Message);
                 return ee.Message;
             }
         }

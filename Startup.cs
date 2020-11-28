@@ -43,8 +43,10 @@ namespace dswebapi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddLog4Net();
+
             app.UseAuthentication();
             if (env.IsDevelopment())
             {
@@ -54,6 +56,7 @@ namespace dswebapi
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+            
             app.UseRouting();
 
             app.UseAuthorization();

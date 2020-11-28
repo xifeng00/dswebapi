@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using dswebapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace dswebapi.Controllers
 {
@@ -16,7 +17,14 @@ namespace dswebapi.Controllers
     [Route("api/[controller]/[action]")]
     public class AddressController : ControllerBase
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(AddressController));
+        private readonly ILogger<AddressController> _logger;
+        private readonly ILoggerFactory _loggerFactory;
+        public AddressController(ILogger<AddressController> logger,
+            ILoggerFactory loggerFactory)
+        {
+            _logger = logger;
+            this._loggerFactory = loggerFactory;
+        }
         /// <summary>
         /// 返回反有地址
         /// </summary>
@@ -31,7 +39,7 @@ namespace dswebapi.Controllers
             }
             catch (Exception ee)
             {
-                log.Error(ee.Message);
+                _logger.LogError(ee.Message);
                 return ee.Message;
             }
         }
@@ -50,7 +58,7 @@ namespace dswebapi.Controllers
                 ins_address.creattime = DateTime.Now;
                 ins_address.areaid = "100000";
                 ins_address.areaname = "中国";
-                ins_address.creatuserid = "444";
+                ins_address.creatuserid = (string)HttpContext.User.Identity.Name;
                 if (db.dbdao.DbInsert<Address>(ins_address))
                 {
                     return ins_address.id+"ok";
@@ -60,7 +68,7 @@ namespace dswebapi.Controllers
             }
             catch (Exception ee)
             {
-                log.Error(ee.Message);
+                _logger.LogError(ee.Message);
                 return ee.Message;
             }
         }
@@ -83,7 +91,7 @@ namespace dswebapi.Controllers
             }
             catch (Exception ee)
             {
-                log.Info(ee.Message);
+                _logger.LogError(ee.Message);
                 return ee.Message;
             }
         }
