@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using dswebapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace dswebapi.Controllers
 {
@@ -60,5 +61,22 @@ namespace dswebapi.Controllers
             //return device.id;
         }
 
+
+        [HttpGet]
+        public string GetAreaAll()
+        {
+            try
+            {
+                List<Area> areas = db.dbdao.DbSql<Area>("SELECT * from  area ORDER BY id,parent_id");
+                return json.ujson.toStr<Area>(areas);
+            }
+            catch (Exception ee)
+            {
+                log.Error(ee.Message);
+                return ee.Message;
+            }
+        }
+       
+       
     }
 }

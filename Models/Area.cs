@@ -26,7 +26,11 @@ namespace dswebapi.Models
         public string lng { get; set; }
         public string lat { get; set; }
         public string remark { get; set; }
-        
+        public override string ToString()
+        {
+            return this.merger_name;
+        }
+
 
     }
    

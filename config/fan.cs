@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace fan
 {
-    public class fan
+    public class Fan
     {
         public static string toStr(object obj)
         {

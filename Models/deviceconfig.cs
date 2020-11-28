@@ -1,4 +1,5 @@
-﻿using SqlSugar;
+﻿using fan;
+using SqlSugar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,29 @@ namespace dswebapi.Models
         public string pupdatefile { get; set; }
         public int pupdateport { get; set; }
         public string pdskey { get; set; }
+        public override string ToString()
+        {
+            string str1 = "dskey:" + Fan.toStr(this.pdskey);
+            str1 += ",pssid:" + Fan.toStr(this.pssid);
+            str1 += ",ppw:" + Fan.toStr(this.ppw);
+            str1 += ",psrvip:" + Fan.toStr(this.psrvip);
+            str1 += ",psrvport:" + Fan.toStr(this.psrvport);
+            str1 += ",pljcs:" + Fan.toStr(this.pljcs);
+            str1 += ",pbreathed:" + Fan.toStr(this.pbreathed);
+            str1 += ",pdelytime:" + Fan.toStr(this.pdelytime);
+            str1 += ",perrspace:" + Fan.toStr(this.perrspace);
+            str1 += ",pclosetime:" + Fan.toStr(this.pclosetime);
+            str1 += ",pautoopentime:" + Fan.toStr(this.pautoopentime);
+            str1 += ",pisautoopen:" + Fan.toStr(this.pisautoopen);
+            str1 += ",pdaytime:" + Fan.toStr(this.pdaytime);
+            str1 += ",psgtime:" + Fan.toStr(this.psgtime);
+            str1 += ",pupdatedns:" + Fan.toStr(this.pupdatedns);
+            str1 += ",pupdatefile:" + Fan.toStr(this.pupdatefile);
+            str1 += ",pupdateport:" + Fan.toStr(this.pupdateport);
+            return str1;
+          
+
+        }
 
     }
 }

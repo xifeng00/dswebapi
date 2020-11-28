@@ -36,10 +36,17 @@ namespace dswebapi.Controllers
                     }
                     else
                     {
-                        sql = "select * from device where device_online='"+ fan.fan.toBool(online)+"'";
+                        sql = "select * from device where device_online='"+ fan.Fan.toBool(online)+"'";
                     }
                 }
                 List<Device> devices = db.dbdao.DbSql<Device>(sql);
+                if (devices != null)//加载关联类
+                {
+                    foreach (Device D in devices)
+                    {
+                        D.Load();
+                    }
+                }
                 return json.ujson.toStr<Device>(devices);
             }
             catch (Exception ee)
@@ -52,7 +59,7 @@ namespace dswebapi.Controllers
         /// 返回所有的地锁列表
         /// </summary>
         /// <returns></returns>
-        public string GetALL()
+        public string GetAll()
         {
             try
             {

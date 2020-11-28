@@ -19,7 +19,7 @@ namespace dswebapi.db
         //查询
         public static T GetById<T>(string id1) where T : class, new()
         {
-
+            if (id1 == null) { return default; }
             T t1 = (T)cache.DbCache.CacheGet<T>(id1);
             if(t1==null)
             {
@@ -57,7 +57,6 @@ namespace dswebapi.db
             int lsrecn = dbConnect.GetSqlSugarClient(0).Deleteable<T>(t1).ExecuteCommand();
             db.cache.DbCache.CacheDelete(t1);
             return lsrecn > 0;
-
 
         }
         //用SQL方式

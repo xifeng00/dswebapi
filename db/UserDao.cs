@@ -20,7 +20,7 @@ namespace dswebapi.db
         public User login(string account, string pwd)
         {
             string jmpwd = EncryptProvider.Md5(pwd);
-            string sql = "select * from \"user\" where account='" + account + "' and pwd='"+ jmpwd + "'";
+            string sql = "select * from public.user where account='" + account + "' and pwd='"+ jmpwd + "'";
             List<User> userls= dbdao.DbSql<User>(sql);
             if (userls.Count > 0)
             {

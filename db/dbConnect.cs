@@ -23,7 +23,7 @@ namespace dswebapi.db
                 ConnectionConfig f = new ConnectionConfig();
                 f.ConnectionString = dbstr;
                 f.DbType = DbType.PostgreSQL;
-                f.IsAutoCloseConnection = false;
+                f.IsAutoCloseConnection = true;
                 f.InitKeyType = InitKeyType.Attribute;
                 s = new SqlSugarClient(f);
                 dbConnects.Add(threadIndex, s);

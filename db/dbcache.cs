@@ -40,6 +40,7 @@ namespace dswebapi.db.cache
         /// </summary>
         public static T CacheGet<T>(string key)
         {
+            if (key == null) { return default; }
             if (CacheDictionary.ContainsKey(key))
                 return (T)CacheDictionary[key];
             else
