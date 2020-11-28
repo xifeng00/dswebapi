@@ -41,7 +41,7 @@ namespace dswebapi.Controllers
             if (user!=null)
             {
                 var claims = new List<Claim>(){
-                        new Claim(ClaimTypes.Name,account)
+                        new Claim(ClaimTypes.Name,user.id)
                 };
                 var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Customer"));
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties
@@ -60,6 +60,7 @@ namespace dswebapi.Controllers
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
         public string Get()
         {
+            object cc = HttpContext.User.Identity.Name;
             try
             {
                 List<User> users = db.dbdao.GetList<User>();
