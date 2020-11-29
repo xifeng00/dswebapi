@@ -24,9 +24,9 @@ namespace dswebapi.Controllers
         {
             try
             {
-                List<DeviceConfig> deviceconfigs = db.dbdao.GetList<DeviceConfig>();
+                List<DeviceDebug> devicedebugs = db.dbdao.GetList<DeviceDebug>();
                 StringBuilder sb = new StringBuilder();
-                foreach ( Models.DeviceConfig a in deviceconfigs)
+                foreach ( Models.DeviceDebug a in devicedebugs)
                 {
                     sb.Append(JsonConvert.SerializeObject(a));
                     //sb.Append("\r\n");
@@ -46,16 +46,16 @@ namespace dswebapi.Controllers
         }
 
         [HttpPost]
-        public bool Save([FromBody] DeviceConfig deviceconfig)
+        public bool Save([FromBody] DeviceDebug devicedebug)
         {
-            DeviceConfig temp = db.dbdao.GetById<DeviceConfig>(deviceconfig.id.ToString());
+            DeviceDebug temp = db.dbdao.GetById<DeviceDebug>(devicedebug.id.ToString());
             if (temp != null)
             {
-                return dbdao.DbUpdate(deviceconfig);
+                return dbdao.DbUpdate(devicedebug);
             }
             else
             {
-                return dbdao.DbInsert(deviceconfig);
+                return dbdao.DbInsert(devicedebug);
             }
             //return device.id;
         }

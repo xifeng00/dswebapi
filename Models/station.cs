@@ -44,7 +44,7 @@ namespace dswebapi.Models
             set
             {
                 _Address = value;
-                if(this._Address==null)
+                if(this._Address!=null)
                 {
                     this.addressname = this._Address.name;
                 }
@@ -54,6 +54,7 @@ namespace dswebapi.Models
         public DateTime creattime { get; set; }
         public DateTime updatetime { get; set; }
         public string creatuserid { get; set; }
+        public int num { get; set; }
         public override string ToString()
         {
             return name;

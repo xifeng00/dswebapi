@@ -1,6 +1,7 @@
 ﻿using SqlSugar;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace dswebapi.db
 {
@@ -73,6 +74,28 @@ namespace dswebapi.db
 
             return lsrecn > 0;
         }
+        public static DataTable AdoSql(string sql)
+        {
+            /*
+            var dt = db.Ado.GetDataTable("select * from table where id=@id and name=@name", new List<SugarParameter>(){
+  new SugarParameter("@id",1),
+  new SugarParameter("@name",2)
+            */
+            DataTable dt = dbConnect.GetSqlSugarClient(0).Ado.GetDataTable(sql);
+            return dt;
+        }
+        public static int AdoExecuteSql(List<string> sqllist)
+        {
+            int hh = 0;
+            SqlSugarClient c = dbConnect.GetSqlSugarClient(0);
+            c.BeginTran();
+            foreach (string s in sqllist)
+            {
+                hh+=c.Ado.ExecuteCommand(s);
+            }
+            c.CommitTran();
+            return hh;
 
+        }
     }
 }

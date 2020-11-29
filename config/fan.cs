@@ -25,5 +25,18 @@ namespace fan
                 return true;
             }
         }
+        public static int toInt(object num)
+        {
+            int toint = 0;
+            try
+            {
+                toint = Convert.ToInt32(num);
+            }
+            catch
+            {
+                toint = 0;
+            }
+            return toint;
+        }
     }
 }

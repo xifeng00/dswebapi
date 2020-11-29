@@ -40,7 +40,7 @@ namespace dswebapi.Controllers
         {
             if (account == "" || pwd == ""||account==null || pwd==null)
             {
-                return Content("没有登录") ;
+                return Content("nologin") ;
             }
             User user = userDao.login(account, pwd);
             if (user!=null)
