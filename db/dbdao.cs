@@ -84,7 +84,7 @@ namespace dswebapi.db
             DataTable dt = dbConnect.GetSqlSugarClient(0).Ado.GetDataTable(sql);
             return dt;
         }
-        public static int AdoExecuteSql(List<string> sqllist)
+        public static int AdoExecuteSqls(List<string> sqllist)
         {
             int hh = 0;
             SqlSugarClient c = dbConnect.GetSqlSugarClient(0);
@@ -93,6 +93,16 @@ namespace dswebapi.db
             {
                 hh+=c.Ado.ExecuteCommand(s);
             }
+            c.CommitTran();
+            return hh;
+
+        }
+        public static int AdoExecuteSql(string sql)
+        {
+
+            SqlSugarClient c = dbConnect.GetSqlSugarClient(0);
+            c.BeginTran();
+            int hh = c.Ado.ExecuteCommand(sql);
             c.CommitTran();
             return hh;
 

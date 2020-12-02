@@ -180,7 +180,7 @@ namespace dswebapi.Controllers
             List<string> sqllist = new List<string>();
             
 
-            string insertsql = @"insert into device_del(id,name ,device_sn ,device_num ,device_mac ,device_online ,device_state ,stationid ,device_ver ,device_type ,
+            string insertsql = @"insert into public.device_del(id,name ,device_sn ,device_num ,device_mac ,device_online ,device_state ,stationid ,device_ver ,device_type ,
                                  device_usernum , createtime ,updatetime ,createuserid ,stationname,device_config ,pssid  ,ppw  ,perrspace,pbreathed,pdelytime,popentime,pclosetime ,pautoopentime ,
                                  pisautoopen,pljcs  ,psrvip ,psrvport,pdaytime,psgtime,pupdatedns,pupdatefile,pupdateport,device_debug)
                                  SELECT id,name ,device_sn ,device_num ,device_mac ,device_online ,device_state ,stationid ,device_ver ,device_type ,
@@ -189,7 +189,7 @@ namespace dswebapi.Controllers
                                  from device ";
                                            
 
-            string sqldele = "delete from device where id in (select id from device_del)";
+            string sqldele = "delete from public.device where id in (select id from device_del)";
             string tj1 = "";
             foreach(IdKey ik in idlist)
             {
@@ -204,7 +204,7 @@ namespace dswebapi.Controllers
             insertsql = insertsql + sqlwhere;
             sqllist.Add(insertsql);
             sqllist.Add(sqldele);
-            if (dbdao.AdoExecuteSql(sqllist) > 0)
+            if (dbdao.AdoExecuteSqls(sqllist) > 0)
             {
                 _logger.LogDebug(curUser.account + "删除地锁" + sqllist.ToString());
                 return "ok";

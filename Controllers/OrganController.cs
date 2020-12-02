@@ -13,16 +13,19 @@ using Microsoft.Extensions.Logging;
 
 namespace dswebapi.Controllers
 {
+    /// <summary>
+    /// 组织信息维护
+    /// </summary>
     [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class StationController : ControllerBase
+    public class OrganController : ControllerBase
     {
-        private readonly ILogger<StationController> _logger;
+        private readonly ILogger<OrganController> _logger;
         private readonly ILoggerFactory _loggerFactory;
         private string userid = "";
         private User curUser = null;
-        public StationController(ILogger<StationController> logger,
+        public OrganController(ILogger<OrganController> logger,
             ILoggerFactory loggerFactory)
         { 
             _logger = logger;
@@ -31,14 +34,14 @@ namespace dswebapi.Controllers
         }
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
-        public string Get()
+        public string GetOrgan()
         {
             try
             {
                 this.userid = (string)HttpContext.User.Identity.Name;
                 this.curUser = db.dbdao.GetById<User>(userid);
-                List<Station> stations = db.dbdao.GetList<Station>();
-                string result_str = json.ujson.toStr<Station>(stations);             
+                List<Organ> organs = db.dbdao.DbSql<Organ>("select * from public.organ  order by num");
+                string result_str = json.ujson.toStr<Organ>(organs);             
                 _logger.LogInformation(result_str);
                 return result_str;
             }
@@ -49,26 +52,28 @@ namespace dswebapi.Controllers
             }
         }
         [HttpGet]
-        public string Insert()
+        public string InsertOrgan(string parentid)
         {
             try
             {
                 this.userid = (string)HttpContext.User.Identity.Name;
                 this.curUser = db.dbdao.GetById<User>(userid);
-                Station s = new Station();
-                s.addressid = "00000-00000-00000-00000-00001";
-                s.addressname = "modeladdress";
-                s.id = Guid.NewGuid().ToString();
-                s.fzr = "负责人";
-                s.creattime = DateTime.UtcNow;
-                s.updatetime = DateTime.UtcNow;
-                s.tel = "00000000000";
-                s.remark = "news";
-                s.name = "system new ";
-                s.creatuserid = this.userid;
-                s.organid = "3ecb4036-eb4a-4e8a-95a5-6d152089aa5a";
-                s.organname = "河南莱佳电新能源科技有限公司";
-                if (db.dbdao.DbInsert<Station>(s))
+                Organ or = new Organ();
+                or.id = Guid.NewGuid().ToString();
+                or.parentid = parentid;
+                or.addressid = "00000 - 00000 - 00000 - 00000 - 00001";
+                or.addressname = "默认";
+                or.areaid = "100000";
+                or.areaname = "中国";
+                or.createtime = DateTime.Now;
+                or.createuserid = this.userid;
+                or.updatetime = DateTime.Now;
+                or.name = "请更改";
+                or.spellname = "";
+                or.state = 1;
+                or.otherinfo = "请输入其它信息";
+              
+                if (db.dbdao.DbInsert<Organ>(or))
                 {
                     return "ok";
                 }
@@ -76,7 +81,7 @@ namespace dswebapi.Controllers
                 {
                     return "failed";
                 }
-                _logger.LogDebug(curUser.account + "插入场站数据" + s.id);
+                _logger.LogDebug(curUser.account + "插入组织数据" + or.id);
             }
             catch (Exception ee)
             {
@@ -85,18 +90,18 @@ namespace dswebapi.Controllers
             }
         }
         [HttpPost]
-        public string Save([FromBody] Station station)
+        public string SaveOrgan([FromBody] Organ organ)
         {
             this.userid = (string)HttpContext.User.Identity.Name;
             this.curUser = db.dbdao.GetById<User>(userid);
-            if (dbdao.DbUpdate(station))
+            if (dbdao.DbUpdate(organ))
             {
-                _logger.LogDebug(this.curUser.account + " 保存场站数据" + json.ujson.ToStr(station));
+                _logger.LogDebug(this.curUser.account + " 保存组织数据" + json.ujson.ToStr(organ));
                 return "ok";
             }
             else
             {
-                _logger.LogDebug(this.curUser.account + " 保存场站数据出错" + json.ujson.ToStr(station));
+                _logger.LogDebug(this.curUser.account + " 保存组织数据出错" + json.ujson.ToStr(organ));
                 return "failed";
             }
         }
@@ -106,29 +111,31 @@ namespace dswebapi.Controllers
         /// <param name="lsadd1"></param>
         /// <returns></returns>
         [HttpPost]
-        public string Delete([FromBody] Station lsastation)
+        public string DeleteOrganForIdLis([FromBody] List<IdKey> idlist)
         {
-            try
+            this.curUser = db.dbdao.GetById<User>((string)HttpContext.User.Identity.Name);
+            string delsql = @"delete from public.organ where id in ";         
+            string tj1 = "";
+            foreach (IdKey ik in idlist)
             {
-                //Address lsadd1 = db.dbdao.GetById<Address>("ss");
-                this.userid = (string)HttpContext.User.Identity.Name;
-                this.curUser = db.dbdao.GetById<User>(userid);
-
-                if (db.dbdao.DbDelete<Station>(lsastation))
+                if (tj1 != "")
                 {
-                    _logger.LogDebug(this.curUser.account + " 删除场站数据出错" + json.ujson.ToStr(lsastation));
-                    return lsastation.id + "ok";
+                    tj1 += ",";
                 }
-                else
-                {
-                    return "failed";
-                }
+                tj1 += "'" + ik.id + "'";
 
             }
-            catch (Exception ee)
+            delsql = delsql + "("+tj1+")";
+
+            if (dbdao.AdoExecuteSql(delsql) > 0)
             {
-                _logger.LogError(ee.Message);
-                return ee.Message;
+                _logger.LogDebug(curUser.account + "删除组织" + delsql.ToString());
+                return "ok";
+            }
+            else
+            {
+                _logger.LogDebug(curUser.account + "删除组织失败" + delsql.ToString());
+                return "failed";
             }
         }
 
