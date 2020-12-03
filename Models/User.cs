@@ -21,8 +21,13 @@ namespace dswebapi.Models
         public string rolenames { get; set; }
         public DateTime createtime { get; set; }
         public DateTime updatetime { get; set; }
-        public string creatuserid { get; set; }
+        public string createuserid { get; set; }
         public string type { get; set; }
+        public int num { get; set; }
+        public string organid { get; set; }
+        public string managerorganids { get; set; }
+        public string organname { get; set; }
+        public string managerorgannames { get; set; }
     }
 
 }

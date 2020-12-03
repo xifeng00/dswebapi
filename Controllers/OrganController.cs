@@ -62,16 +62,16 @@ namespace dswebapi.Controllers
                 or.id = Guid.NewGuid().ToString();
                 or.parentid = parentid;
                 or.addressid = "00000 - 00000 - 00000 - 00000 - 00001";
-                or.addressname = "默认";
+                or.addressname = "";
                 or.areaid = "100000";
-                or.areaname = "中国";
+                or.areaname = "";
                 or.createtime = DateTime.Now;
                 or.createuserid = this.userid;
                 or.updatetime = DateTime.Now;
-                or.name = "请更改";
+                or.name = "";
                 or.spellname = "";
                 or.state = 1;
-                or.otherinfo = "请输入其它信息";
+                or.otherinfo = "";
               
                 if (db.dbdao.DbInsert<Organ>(or))
                 {
@@ -111,7 +111,7 @@ namespace dswebapi.Controllers
         /// <param name="lsadd1"></param>
         /// <returns></returns>
         [HttpPost]
-        public string DeleteOrganForIdLis([FromBody] List<IdKey> idlist)
+        public string DeleteOrganForIdList([FromBody] List<IdKey> idlist)
         {
             this.curUser = db.dbdao.GetById<User>((string)HttpContext.User.Identity.Name);
             string delsql = @"delete from public.organ where id in ";         

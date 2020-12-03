@@ -37,7 +37,7 @@ namespace dswebapi.Controllers
             {
                 this.userid = (string)HttpContext.User.Identity.Name;
                 this.curUser = db.dbdao.GetById<User>(userid);
-                List<Station> stations = db.dbdao.GetList<Station>();
+                List<Station> stations = db.dbdao.DbSql<Station>("select * from public.station order by num");
                 string result_str = json.ujson.toStr<Station>(stations);             
                 _logger.LogInformation(result_str);
                 return result_str;
@@ -60,8 +60,8 @@ namespace dswebapi.Controllers
                 s.addressname = "modeladdress";
                 s.id = Guid.NewGuid().ToString();
                 s.fzr = "负责人";
-                s.creattime = DateTime.UtcNow;
-                s.updatetime = DateTime.UtcNow;
+                s.creattime = DateTime.Now;
+                s.updatetime = DateTime.Now;
                 s.tel = "00000000000";
                 s.remark = "news";
                 s.name = "system new ";

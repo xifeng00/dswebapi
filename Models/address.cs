@@ -63,6 +63,7 @@ namespace dswebapi.Models
         public DateTime creattime { get; set; }
         public DateTime updatetime { get; set; }
         public string creatuserid { get; set; }
+        public int num { get; set; }
         public override string ToString()
         {
             if (name == null) { return ""; }

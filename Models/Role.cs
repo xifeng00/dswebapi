@@ -20,6 +20,8 @@ namespace dswebapi.Models
         public DateTime  createtime { get; set; }
         public DateTime  updatetime { get; set; }
         public string createuserid { get; set; }
+        public int num { get; set; }
+        
 
 
     }
