@@ -8,11 +8,14 @@ namespace dswebapi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class InstructController : Controller
+    public class InstructController : ControllerBase
     {
-        public IActionResult Index()
+
+        public Task<IActionResult> heart()
         {
-            return View();
+
+            return null;
         }
+
     }
 }
