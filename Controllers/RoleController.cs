@@ -8,6 +8,7 @@ using System.Text;
 using Newtonsoft.Json;
 using dswebapi.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace dswebapi.Controllers
 {
@@ -16,46 +17,127 @@ namespace dswebapi.Controllers
     [Route("api/[controller]/[action]")]
     public class RoleController : ControllerBase
     {
-        private log4net.ILog log = log4net.LogManager.GetLogger(Startup.repository.Name, typeof(RoleController));
-
+        private readonly ILogger<RoleController> _logger;
+        private readonly ILoggerFactory _loggerFactory;
+        private string userid = "";
+         private User curUser =null;
+        public RoleController(ILogger<RoleController> logger,
+            ILoggerFactory loggerFactory)
+        {
+            _logger = logger;
+            this._loggerFactory = loggerFactory;
+        }
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
-        public string Get()
+        public string GetRole()
         {
             try
             {
-                List<Role> roles = db.dbdao.GetList<Role>();
-                StringBuilder sb = new StringBuilder();
-                foreach (Models.Role a in roles)
-                {
-                    sb.Append(JsonConvert.SerializeObject(a));
-                    //sb.Append("\r\n");
-                }
-                //log.Info($"testController-GetArea:{sb.ToString()}");
-                log.Info(sb);
 
-                string cc = (Guid.NewGuid()).ToString();
-                sb.Append(cc);
-                return sb.ToString();
+                List<Role> roles = db.dbdao.DbSql<Role>("select * from public.role order by num");
+                string result_str = json.ujson.toStr<Role>(roles);
+                _logger.LogInformation(result_str);
+                return result_str;
+           
             }
             catch (Exception ee)
             {
-                log.Error(ee.Message);
+                _logger.LogError(ee.Message);
                 return ee.Message;
             }
         }
+       
+       
+        [HttpGet]
+        public string InsertRole()
+        {
+            try
+            {
+                try
+                {
+                    List<Role> roles1 = db.dbdao.DbSql<Role>("select * from public.role where name='' and num=999");
+                    if(roles1.Count>0)
+                    {
+                        return "重复新增";
+                    }
+                    this.userid = (string)HttpContext.User.Identity.Name;
+                    this.curUser = db.dbdao.GetById<User>(userid);
+                    Role r = new  Role();
+                    r.id = Guid.NewGuid().ToString();
+                    r.interfaceids = "";
+                    r.interfacenames = "";
+                    r.name = "";
+                    r.num = 999;
+                    r.createtime = DateTime.Now;
+                    r.updatetime = DateTime.Now;
+                    r.createuserid = this.userid;
+                   
+                    if (db.dbdao.DbInsert<Role>(r))
+                    {
+                        return "ok";
+                    }
+                    else
+                    {
+                        return "failed";
+                    }
+                    _logger.LogDebug(curUser.account + "插入用户数据" + r.id);
+                }
+                catch (Exception ee)
+                {
+                    _logger.LogDebug(ee.Message);
+                    return ee.Message;
+                }
+
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee.Message);
+                return ee.Message;
+            }
+        }
+        [HttpPost]
+        public string DeleteRole([FromBody] Role role)
+        {
+            try
+            {
+                //Address lsadd1 = db.dbdao.GetById<Address>("ss");
+                this.userid = (string)HttpContext.User.Identity.Name;
+                this.curUser = db.dbdao.GetById<User>(userid);
+
+                if (db.dbdao.DbDelete<Role>(role))
+                {
+                    _logger.LogDebug(this.curUser.account + " 删除角色数据出错" + json.ujson.ToStr(role));
+                    return role.id + "ok";
+                }
+                else
+                {
+                    return "failed";
+                }
+
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee.Message);
+                return ee.Message;
+            }
+            //return device.id;
+        }
 
         [HttpPost]
-        public bool Save([FromBody] Role role)
+        public string SaveRole([FromBody] Role role)
         {
-            Role temp = db.dbdao.GetById<Role>(role.id.ToString());
-            if (temp != null)
+
+            this.userid = (string)HttpContext.User.Identity.Name;
+            this.curUser = db.dbdao.GetById<User>(userid);
+            if (dbdao.DbUpdate(role))
             {
-                return dbdao.DbUpdate(role);
+                _logger.LogDebug(this.curUser.account + " 保存角色数据" + json.ujson.ToStr(role));
+                return "ok";
             }
             else
             {
-                return dbdao.DbInsert(role);
+                _logger.LogDebug(this.curUser.account + " 保存角色数据出错" + json.ujson.ToStr(role));
+                return "failed";
             }
             //return device.id;
         }

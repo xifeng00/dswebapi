@@ -34,7 +34,7 @@ namespace dswebapi.Controllers
         {
             try
             {
-                List<Address> addresses = db.dbdao.DbSql<Address>("SELECT * from  address ORDER BY name");
+                List<Address> addresses = db.dbdao.DbSql<Address>("SELECT * from  address ORDER BY num");
                 return json.ujson.toStr<Address>(addresses);
             }
             catch (Exception ee)

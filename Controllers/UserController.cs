@@ -23,7 +23,8 @@ namespace dswebapi.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly ILoggerFactory _loggerFactory;
-
+        private string userid = "";
+        private User curUser = null;
         public UserController(ILogger<UserController> logger,
             ILoggerFactory loggerFactory)
         {
@@ -51,7 +52,7 @@ namespace dswebapi.Controllers
                 var userPrincipal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Customer"));
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, userPrincipal, new AuthenticationProperties
                 {
-                    ExpiresUtc = DateTime.UtcNow.AddMinutes(30),//有效时间20分钟
+                    ExpiresUtc = DateTime.Now.AddMinutes(30),//有效时间20分钟
                     IsPersistent = false,
                     AllowRefresh = false
                 });
@@ -64,22 +65,71 @@ namespace dswebapi.Controllers
 
         [HttpGet]
         //[CacheOutput(ClientTimeSpan = 60, ServerTimeSpan = 60)]
-        public string Get()
+        public string GetUserAll()
         {
             object cc = HttpContext.User.Identity.Name;
             try
             {
-                List<User> users = db.dbdao.GetList<User>();
-                StringBuilder sb = new StringBuilder();
-                foreach (Models.User a in users)
-                {
-                    sb.Append(JsonConvert.SerializeObject(a));
-                    sb.Append("\r\n");
-                }
-                //log.Info($"testController-GetArea:{sb.ToString()}");
-                _logger.LogInformation(sb.ToString());
 
-                return sb.ToString();
+                List<User> users = db.dbdao.DbSql<User>("select * from public.user order by num");
+                string result_str = json.ujson.toStr<User>(users);
+                _logger.LogInformation(result_str);
+                return result_str;
+
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee.Message);
+                return ee.Message;
+            }
+        }
+        [HttpGet]
+        public string InsertUser()
+        {
+            try
+            {
+                try
+                {
+                    List<User> roles1 = db.dbdao.DbSql<User>("select * from public.user where name='' and num=9999");
+                    if (roles1.Count > 0)
+                    {
+                        return "重复新增";
+                    }
+                    this.userid = (string)HttpContext.User.Identity.Name;
+                    this.curUser = db.dbdao.GetById<User>(userid);
+                    User r = new User();
+                    r.id = Guid.NewGuid().ToString();
+                    r.account = "121-1211-1211";
+                    r.name = "";
+                    r.num = 9999;
+                    r.createtime = DateTime.Now;
+                    r.updatetime = DateTime.Now;
+                    r.createuserid = this.userid;
+                    r.tel = "";
+                    r.pwd = "DC5C7986DAEF50C1E02AB09B442EE34F";
+                    r.roleids = "";
+                    r.rolenames = "";
+                    r.organid = "";
+                    r.organname = "";
+                    r.managerorganids = "";
+                    r.managerorgannames = "";
+
+                    if (db.dbdao.DbInsert<User>(r))
+                    {
+                        return "ok";
+                    }
+                    else
+                    {
+                        return "failed";
+                    }
+                    _logger.LogDebug(curUser.account + "插入角色数据" + r.id);
+                }
+                catch (Exception ee)
+                {
+                    _logger.LogDebug(ee.Message);
+                    return ee.Message;
+                }
+
             }
             catch (Exception ee)
             {
@@ -88,18 +138,50 @@ namespace dswebapi.Controllers
             }
         }
         [HttpPost]
-        public bool save([FromBody] User user)
+        public string DeleteUser([FromBody] User user)
         {
-            User temp = db.dbdao.GetById<User>(user.id.ToString());
-            if (temp != null)
+            try
             {
-                return dbdao.DbUpdate(user);
+                //Address lsadd1 = db.dbdao.GetById<Address>("ss");
+                this.userid = (string)HttpContext.User.Identity.Name;
+                this.curUser = db.dbdao.GetById<User>(userid);
+
+                if (db.dbdao.DbDelete<User>(user))
+                {
+                    _logger.LogDebug(this.curUser.account + " 删除用户数据出错" + json.ujson.ToStr(user));
+                    return user.id + "ok";
+                }
+                else
+                {
+                    return "failed";
+                }
+
+            }
+            catch (Exception ee)
+            {
+                _logger.LogError(ee.Message);
+                return ee.Message;
+            }
+            //return device.id;
+        }
+
+        [HttpPost]
+        public string SaveUser([FromBody] User user)
+        {
+
+            this.userid = (string)HttpContext.User.Identity.Name;
+            this.curUser = db.dbdao.GetById<User>(userid);
+            if (dbdao.DbUpdate(user))
+            {
+                _logger.LogDebug(this.curUser.account + " 保存用户数据" + json.ujson.ToStr(user));
+                return "ok";
             }
             else
             {
-                user.pwd= EncryptProvider.Md5(user.pwd);//密码加密过程
-                return dbdao.DbInsert(user);
+                _logger.LogDebug(this.curUser.account + " 保存用户数据出错" + json.ujson.ToStr(user));
+                return "failed";
             }
+            //return device.id;
         }
         /// <summary>
         /// 验证用户账户 不允许重复

@@ -34,6 +34,9 @@ namespace dswebapi.Models
         public string tel { get; set; }
         public string addressid { get; set; }
         public string addressname{ get; set; }
+        public string organid { get; set; }
+        public string organname { get; set; }
+
         [SugarColumn(IsIgnore = true)]
         public Address Adress
         {
