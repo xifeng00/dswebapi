@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-
+using dswebapi.Controllers;
 
 namespace dswebapi
 {
@@ -35,6 +35,9 @@ namespace dswebapi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc(options => {
+                options.Filters.Add<FilterController>();
+            });
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,o=>{
                 o.Cookie.Name = "_AdminTicketCookie";
                 o.LoginPath = new PathString("/api/user/login");
